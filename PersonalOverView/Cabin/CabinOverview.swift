@@ -43,29 +43,14 @@ struct CabinOverview: View {
                     VStack (alignment: .leading) {
                         Text(cabin.name)
                             .font(Font.title.weight(.ultraLight))
-                            .foregroundColor(Color("YoungPassionLight"))
                         HStack {
                             Text("\(IntToDateString(int: cabin.fromDate))")
                             Spacer()
                             Text("\(IntToDateString(int: cabin.toDate))")
                         }
-//                        .background(Color.red.opacity(0.50))
-                        .background(LinearGradient(gradient: Gradient(colors: [Color("YoungPassionLight"),
-                                                                               Color("YoungPassionLight")]),
-                                                   startPoint: .leading,
-                                                   endPoint: .trailing))
-                        
-//                        .background(LinearGradient(gradient: Gradient(colors: [Color(red: 251/255,
-//                                                                                     green: 128/255,
-//                                                                                     blue: 128/255),
-//                                                                               Color(red: 251/255,
-//                                                                                     green: 128/255,
-//                                                                                     blue: 128/255)]),
-//                                                   startPoint: .leading,
-//                                                   endPoint: .trailing))
-                        
+                        .background(Color("Background"))
                         .cornerRadius(5)
-                        .padding(.horizontal)
+                        .padding(.horizontal, 5)
                     }
                 }
                 /// onDelete finne bare i iOS
