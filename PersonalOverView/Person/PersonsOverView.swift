@@ -388,6 +388,10 @@ extension String {
     }
 }
 
+///
+/// Oversett address og city som inneholder æøå og ÆØÅ
+///
+
 func mapAddress (address: String,
                  cityNumber: String,
                  city: String) {
@@ -399,7 +403,15 @@ func mapAddress (address: String,
     let m5 = m4.replacingOccurrences(of: "æ", with: "ae")
     let m6 = m5.replacingOccurrences(of: "Æ", with: "AE")
     
+    let n1 = city.replacingOccurrences(of: "å", with: "aa")
+    let n2 = n1.replacingOccurrences(of: "Å", with: "AA")
+    let n3 = n2.replacingOccurrences(of: "ø", with: "oe")
+    let n4 = n3.replacingOccurrences(of: "Ø", with: "OE")
+    let n5 = n4.replacingOccurrences(of: "æ", with: "ae")
+    let n6 = n5.replacingOccurrences(of: "Æ", with: "AE")
+    
     let address = m6
+    let city = n6
     let b = "http://maps.apple.com/?address=" + address + " "
         + cityNumber + " "
         + city + " " + "&t=s"
