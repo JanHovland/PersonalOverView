@@ -418,6 +418,9 @@
    PersonView */
 "Legg inn postnummer" = "Legg inn postnummer";
 
+/* No comment provided by engineer. */
+"Mail" = "e-Post";
+
 /* PersonNewView
    PersonView */
 "Man" = "Mann";
@@ -445,9 +448,10 @@
 /* ShowPersons */
 "Missing personal email" = "E-post adresse er ikke lagt inn.";
 
-/* PersonBirthdayView
+/* ExtractedMessageView
+   PersonBirthdayView
    ShowPersons */
-"Missing phonenumber" = "Telefonnummer er ikke lagt inn.";
+"Missing phonenumber" = "Telefonnummeret er ikke lagt inn.";
 
 /* PersonNewView
    PersonView */
@@ -534,7 +538,10 @@
 /* PersonDeleteView
    PersonNewView
    PersonView */
-"Phone Number" = "Telefon nummer";
+"Phone Number" = "Telefonnummer";
+
+/* No comment provided by engineer. */
+"Phonenumber" = "Telefonnummer";
 
 /* PersonPostalCodesViewIndexed */
 "PostalCodeOverview" = "Postnummer oversikt";
