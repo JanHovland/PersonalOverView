@@ -171,139 +171,143 @@ struct PersonNewView: View {
             .navigationBarTitle(Text(newPerson), displayMode: .inline)
             .navigationBarItems(leading:
                                     Button(action: {
-                                        /// Rutine for å returnere til personoversikten
-                                        presentationMode.wrappedValue.dismiss()
-                                    }, label: {
-                                        ReturnFromMenuView(text: NSLocalizedString("Person overview", comment: "PersonNewView"))
-                                    })
+                /// Rutine for å returnere til personoversikten
+                presentationMode.wrappedValue.dismiss()
+            }, label: {
+                ReturnFromMenuView(text: NSLocalizedString("Person overview", comment: "PersonNewView"))
+            })
                                 , trailing:
                                     Button(action: {
-                                        /// Rutine for å legge til en person
-                                        if firstName.count > 0, lastName.count > 0 {
-                                            CloudKitPerson.doesPersonExist(firstName: firstName,
-                                                                           lastName: lastName) { (result) in
-                                                
-                                                if result == true {
-                                                    
-                                                    /// Finner recordID etter å ha lagret den nye personen
-                                                    let firstName = self.firstName
-                                                    let lastName = self.lastName
-                                                    let predicate = NSPredicate(format: "firstName == %@ AND lastName = %@", firstName, lastName)
-                                                    CloudKitPerson.fetchPerson(predicate: predicate)  { (result) in
-                                                        switch result {
-                                                        case .success(let person):
-                                                            recordID = person.recordID
-                                                        case .failure(let err):
-                                                            let _ = err.localizedDescription
-                                                        }
-                                                    }
-                                                    if recordID != nil {
-                                                        modifyNewPerson(recordID: recordID,
-                                                                        firstName: firstName,
-                                                                        lastName: lastName,
-                                                                        personEmail: personEmail,
-                                                                        address: address,
-                                                                        phoneNumber: phoneNumber,
-                                                                        city: city,
-                                                                        cityNumber: cityNumber,
-                                                                        municipalityNumber: municipalityNumber,
-                                                                        municipality: municipality,
-                                                                        dateOfBirth: dateOfBirth,
-                                                                        dateMonthDay: monthDay(date: dateOfBirth),
-                                                                        gender: gender,
-                                                                        image: image)
-                                                    } else {
-                                                        message = NSLocalizedString("Can not modify this person yet, due to missing value for its recordID.\nPlease try again later...", comment: "PersonNewView")
-                                                        alertIdentifier = AlertID(id: .third)
-                                                    }
-                                                } else {
-                                                    saveNumber += 1
-                                                    if saveNumber == 1 {
-                                                        changeButtonText = false
-                                                        let person = Person(
-                                                            firstName: firstName,
-                                                            lastName: lastName,
-                                                            personEmail: personEmail,
-                                                            address: address,
-                                                            phoneNumber: phoneNumber,
-                                                            cityNumber: cityNumber,
-                                                            city: city,
-                                                            municipalityNumber: municipalityNumber,
-                                                            municipality: municipality,
-                                                            dateOfBirth: dateOfBirth,
-                                                            dateMonthDay: monthDay(date: dateOfBirth),
-                                                            gender: gender,
-                                                            image: image)
-                                                        CloudKitPerson.savePerson(item: person) { (result) in
-                                                            switch result {
-                                                            case .success:
-                                                                changeButtonText = true
-                                                                let person1 = "'\(firstName)" + " \(lastName)'"
-                                                                let message1 =  NSLocalizedString("was saved", comment: "PersonNewView")
-                                                                message = person1 + " " + message1
-                                                                alertIdentifier = AlertID(id: .first)
-                                                            case .failure(let err):
-                                                                message = err.localizedDescription
-                                                                alertIdentifier = AlertID(id: .first)
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            message = NSLocalizedString("First name and last name must both contain a value.", comment: "PersonNewView")
-                                            alertIdentifier = AlertID(id: .first)
-                                        }
-                                    }, label: {
-                                        Text(changeButtonText ? buttonText1 : buttonText2)
-                                            .font(Font.headline.weight(.light))
-                                    })
+                /// Rutine for å legge til en person
+                if firstName.count > 0, lastName.count > 0 {
+                    CloudKitPerson.doesPersonExist(firstName: firstName,
+                                                   lastName: lastName) { (result) in
+                        
+                        if result == true {
+                            
+                            /// Finner recordID etter å ha lagret den nye personen
+                            let firstName = self.firstName
+                            let lastName = self.lastName
+                            let predicate = NSPredicate(format: "firstName == %@ AND lastName = %@", firstName, lastName)
+                            CloudKitPerson.fetchPerson(predicate: predicate)  { (result) in
+                                switch result {
+                                case .success(let person):
+                                    recordID = person.recordID
+                                case .failure(let err):
+                                    let _ = err.localizedDescription
+                                }
+                            }
+                            if recordID != nil {
+                                modifyNewPerson(recordID: recordID,
+                                                firstName: firstName,
+                                                lastName: lastName,
+                                                personEmail: personEmail,
+                                                address: address,
+                                                phoneNumber: phoneNumber,
+                                                city: city,
+                                                cityNumber: cityNumber,
+                                                municipalityNumber: municipalityNumber,
+                                                municipality: municipality,
+                                                dateOfBirth: dateOfBirth,
+                                                dateMonthDay: monthDay(date: dateOfBirth),
+                                                gender: gender,
+                                                image: image)
+                            } else {
+                                message = NSLocalizedString("Can not modify this person yet, due to missing value for its recordID.\nPlease try again later...", comment: "PersonNewView")
+                                alertIdentifier = AlertID(id: .third)
+                            }
+                        } else {
+                            saveNumber += 1
+                            if saveNumber == 1 {
+                                changeButtonText = false
+                                let person = Person(
+                                    firstName: firstName,
+                                    lastName: lastName,
+                                    personEmail: personEmail,
+                                    address: address,
+                                    phoneNumber: phoneNumber,
+                                    cityNumber: cityNumber,
+                                    city: city,
+                                    municipalityNumber: municipalityNumber,
+                                    municipality: municipality,
+                                    dateOfBirth: dateOfBirth,
+                                    dateMonthDay: monthDay(date: dateOfBirth),
+                                    gender: gender,
+                                    image: image)
+                                CloudKitPerson.savePerson(item: person) { (result) in
+                                    switch result {
+                                    case .success:
+                                        changeButtonText = true
+                                        let person1 = "'\(firstName)" + " \(lastName)'"
+                                        let message1 =  NSLocalizedString("was saved", comment: "PersonNewView")
+                                        message = person1 + " " + message1
+                                        alertIdentifier = AlertID(id: .first)
+                                    case .failure(let err):
+                                        message = err.localizedDescription
+                                        alertIdentifier = AlertID(id: .first)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    message = NSLocalizedString("First name and last name must both contain a value.", comment: "PersonNewView")
+                    alertIdentifier = AlertID(id: .first)
+                }
+            }, label: {
+                Text(changeButtonText ? buttonText1 : buttonText2)
+                    .font(Font.headline.weight(.light))
+            })
             )}
-            
-            .alert(item: $alertIdentifier) { alert in
-                switch alert.id {
-                case .first:
-                    return Alert(title: Text(message))
-                case .second:
-                    return Alert(title: Text(message))
-                case .third:
-                    return Alert(title: Text(message))
-                case  .delete:
-                    return Alert(title: Text(message))
-               }
+        
+        .alert(item: $alertIdentifier) { alert in
+            switch alert.id {
+            case .first:
+                return Alert(title: Text(message))
+            case .second:
+                return Alert(title: Text(message))
+            case .third:
+                return Alert(title: Text(message))
+            case  .delete:
+                return Alert(title: Text(message))
             }
-            .sheet(isPresented: $sheet.isShowing, content: sheetContent)
-            /// Ta bort tastaturet når en klikker utenfor feltet
-            .modifier(DismissingKeyboard())
-//            /// Flytte opp feltene slik at keyboard ikke skjuler aktuelt felt
-//            .modifier(AdaptsToSoftwareKeyboard())
-            .onAppear {
-                /// Skal bare lagre dersom saveNumber ==0
-                saveNumber = 0
-                /// Sletter det sist valgte bildet fra ImagePicker
-                ImagePicker.shared.image = nil
-                /// Sletter også selve image
-                image = nil
-            }
-            .overlay(
-                HStack {
-                    Spacer()
-                    VStack {
-                        Button(action: {
-                            presentationMode.wrappedValue.dismiss()
-                        }, label: {
-                            Image(systemName: "chevron.down.circle.fill")
-                                .font(.largeTitle)
-                                .foregroundColor(.none)
-                        })
+        }
+        .sheet(isPresented: $sheet.isShowing, content: sheetContent)
+        /// Ta bort tastaturet når en klikker utenfor feltet
+        .modifier(DismissingKeyboard())
+        //            /// Flytte opp feltene slik at keyboard ikke skjuler aktuelt felt
+        //            .modifier(AdaptsToSoftwareKeyboard())
+        .onAppear {
+            /// Skal bare lagre dersom saveNumber ==0
+            saveNumber = 0
+            /// Sletter det sist valgte bildet fra ImagePicker
+            ImagePicker.shared.image = nil
+            /// Sletter også selve image
+            image = nil
+        }
+        .overlay(
+            HStack {
+                Spacer()
+                VStack {
+                    Button(action: {
+                        presentationMode.wrappedValue.dismiss()
+                    }, label: {
+                        Image(systemName: "chevron.down.circle.fill")
+                            .font(.largeTitle)
+                            .foregroundColor(.none)
+                    })
                         .padding(.trailing, 20)
                         .padding(.top, 115)
-                        Spacer()
-                    }
+                    Spacer()
                 }
-            )
-        
+            }
+        )
+        ///
+        /// Show only one view at a time, regardless of what device or orientation is being used.
+        ///
+        .navigationViewStyle(StackNavigationViewStyle())
     }
+    
     /// Her legges det inn knytning til aktuelle view
     @ViewBuilder
     private func sheetContent() -> some View {
