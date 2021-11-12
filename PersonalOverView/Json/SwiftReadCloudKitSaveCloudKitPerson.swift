@@ -58,7 +58,7 @@ SwiftReadCloudKitSaveCloudKitPerson: View {
                 .frame(width: 80, height: 80, alignment: .center)
                 .font(Font.title.weight(.ultraLight))
                 .padding(.top, 30)
-            ActivityIndicator(isAnimating: $indicatorShowing, style: .medium, color: .gray)
+
             /// Ved å bruke Spacer() her. vil teksten nedenfor vises på bunnen av skjermen
             /// https://www.cometchat.com/tutorials/your-first-swiftui-screen-2-7
             Spacer()

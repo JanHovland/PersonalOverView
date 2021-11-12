@@ -12,12 +12,9 @@ struct CabinReservationView: View {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var personInfo: PersonInfo
     
-    @ObservedObject var sheet = SettingsSheet()
-    
+    @State private var title: String = ""
     @State private var message: String = ""
     @State private var hudMessage: String = ""
-    
-    @State private var alertIdentifier: AlertID?
     @State private var indicatorShowing = false
     @State private var fromDatePicker = Date()
     @State private var toDatePicker = Date()
@@ -27,6 +24,16 @@ struct CabinReservationView: View {
                                      toDate: 0)
     
     @State private var cabinReservation = NSLocalizedString("Cabin Reservation", comment: "CabinReservationView")
+    
+    @State private var isAlertActive = false
+    @State private var isAlertActive2 = false
+
+    @State private var sheetContent: SheetContent = .first
+    @State private var showSheet = false
+
+    enum SheetContent {
+        case first
+    }
     
     var body: some View {
         HStack {
@@ -73,22 +80,22 @@ struct CabinReservationView: View {
                 Spacer()
             }
         }
-        .sheet(isPresented: $sheet.isShowing, content: sheetContent)
+        .sheet(isPresented: $showSheet, content: {
+            switch sheetContent {
+            case .first: HudView(hudMessage: hudMessage, backGroundColor: Color.green)
+            }
+        })
+
         .onAppear {
             cabin.name = personInfo.name
         }
-        .alert(item: $alertIdentifier) { alert in
-            switch alert.id {
-            case .first:
-                return Alert(title: Text(message))
-            case .second:
-                return Alert(title: Text(message))
-            case .third:
-                return Alert(title: Text(message))
-            case  .delete:
-                return Alert(title: Text(message))
-            }
+
+        .alert(title, isPresented: $isAlertActive) {
+            Button("OK", action: {})
+        } message: {
+            Text(message)
         }
+        
     }
     
     func SaveCabinReservation(cabin: Cabin) {
@@ -101,7 +108,8 @@ struct CabinReservationView: View {
                                               toDate: cabin.toDate) { (result) in
                     if result == "OK" {
                         message = NSLocalizedString("This record was saved earlier", comment: "CabinReservationView")
-                        alertIdentifier = AlertID(id: .third)
+                        title = NSLocalizedString("Cabin reservation", comment: "CabinReservationView")
+                        isAlertActive.toggle()
                     } else {
                         CloudKitCabin.saveCabin(item: cabin) { (result) in
                             switch result {
@@ -109,38 +117,31 @@ struct CabinReservationView: View {
                                 let message0 = NSLocalizedString("The cabin reservation for ", comment: "CabinReservationView")
                                 let person1 = message0 + "'\(cabin.name)'"
                                 let message1 =  NSLocalizedString("was saved", comment: "CabinReservationView")
+                                title = NSLocalizedString("Cabin save in CloudKit", comment: "CabinReservationView")
                                 message = person1 + " " + message1
                                 hudMessage = message
-                                ///
-                                /// Sett opp .state direkte i stedet for å kalle med en function
-                                ///
-                                sheet.state = .hudView
-                                // alertIdentifier = AlertID(id: .first)
+                                sheetContent = .first
+                                showSheet.toggle()
                             case .failure(let err):
+                                title = NSLocalizedString("Error from Cabin save in CloudKit", comment: "CabinReservationView")
                                 message = err.localizedDescription
-                                alertIdentifier = AlertID(id: .first)
+                                sheetContent = .first
+                                isAlertActive.toggle()
                             }
                         }
                     }
                 }
             } else {
+                title = NSLocalizedString("Cabin reservation", comment: "CabinReservationView")
                 message = NSLocalizedString("Name must contain a value.", comment: "CabinReservationView")
-                alertIdentifier = AlertID(id: .first)
+                sheetContent = .first
+                isAlertActive.toggle()
             }
         } else {
+            title = NSLocalizedString("From date / To date", comment: "CabinReservationView")
             message = NSLocalizedString("From date must be earlier than To date.", comment: "CabinReservationView")
-            alertIdentifier = AlertID(id: .first)
-        }
-    }
-    
-    /// Her legges det inn knytning til aktuelle view
-    @ViewBuilder
-    private func sheetContent() -> some View {
-        if sheet.state == .hudView {
-            HudView(hudMessage: hudMessage,
-                    backGroundColor: Color.green)
-        } else {
-            EmptyView()
+            sheetContent = .first
+            isAlertActive.toggle()
         }
     }
     

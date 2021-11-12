@@ -6,11 +6,13 @@
 //
 
 /// https://serialcoder.dev/?s=sheet
+/// https://sarunw.com/posts/how-to-present-alert-in-swiftui-ios15/
+/// https://sarunw.com/posts/how-to-show-multiple-alerts-on-the-same-view-in-swiftui/
 
 import SwiftUI
 import CloudKit
 
-struct PersonDetailPersonView: View {
+struct PersonDetailView: View {
     var person: Person
     var body: some View {
         HStack (alignment: .center, spacing: 10) {
@@ -92,11 +94,11 @@ struct PersonDetailPhoneView: View {
                         }
                     })
             )
-//            .alert(Text("Phonenumber"), isPresented: $isAlertActive) {
-//                Button("OK", action: {})
-//            } message: {
-//                Text(message)
-//            }
+            .alert(Text("Phonenumber"), isPresented: $isAlertActive) {
+                Button("OK", action: {})
+            } message: {
+                Text(message)
+            }
     }
 }
 
@@ -121,11 +123,11 @@ struct PersonDetailMessageView: View {
                         }
                     })
             )
-//            .alert(Text("Phonenumber"), isPresented: $isAlertActive) {
-//                Button("OK", action: {})
-//            } message: {
-//                Text(message)
-//            }
+            .alert(Text("Phonenumber"), isPresented: $isAlertActive) {
+                Button("OK", action: {})
+            } message: {
+                Text(message)
+            }
     }
 }
 
@@ -134,6 +136,7 @@ struct PersonDetailMailView: View {
     @State private var message: String = ""
     @State private var isAlertActive = false
     @EnvironmentObject var personInfo: PersonInfo
+    
     //    @ObservedObject var sheet = SettingsSheet()  SKRIV OM ALLE STEDER DENNE FOREKOMMER
     
     enum SheetContent {
@@ -163,11 +166,11 @@ struct PersonDetailMailView: View {
                         }
                     })
             )
-//            .alert(Text("Mail"), isPresented: $isAlertActive) {
-//                Button("OK", action: {})
-//            } message: {
-//                Text(message)
-//            }
+            .alert(Text("Mail"), isPresented: $isAlertActive) {
+                Button("OK", action: {})
+            } message: {
+                Text(message)
+            }
             .sheet(isPresented: $showSheet, content: {
                 switch sheetContent {
                 case .first: PersonSendEmailView()
@@ -208,11 +211,11 @@ struct PersonDetailCabinView: View {
                         }
                     })
             )
-//            .alert(Text("Cabin"), isPresented: $isAlertActive) {
-//                Button("OK", action: {})
-//            } message: {
-//                Text(message)
-//            }
+            .alert(Text("Cabin"), isPresented: $isAlertActive) {
+                Button("OK", action: {})
+            } message: {
+                Text(message)
+            }
             .sheet(isPresented: $showSheet, content: {
                 switch sheetContent {
                 case .first: CabinReservationView()

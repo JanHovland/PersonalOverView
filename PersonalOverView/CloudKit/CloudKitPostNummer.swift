@@ -32,7 +32,7 @@ struct CloudKitPostNummer {
         itemRecord["municipalityNumber"] = item.municipalityNumber as CKRecordValue
         itemRecord["municipalityName"] = item.municipalityName as CKRecordValue
         itemRecord["category"] = item.category as CKRecordValue
-        CKContainer.default().privateCloudDatabase.save(itemRecord) { (record, err) in
+        CKContainer.default().publicCloudDatabase.save(itemRecord) { (record, err) in
             if let err = err {
                 completion(.failure(err))
                 return
@@ -108,12 +108,12 @@ struct CloudKitPostNummer {
                 }
             }
         }
-        CKContainer.default().privateCloudDatabase.add(operation)
+        CKContainer.default().publicCloudDatabase.add(operation)
     }
     
     // MARK: - delete from CloudKit
     static func deletePostNummer(recordID: CKRecord.ID, completion: @escaping (Result<CKRecord.ID, Error>) -> ()) {
-        CKContainer.default().privateCloudDatabase.delete(withRecordID: recordID) { (recordID, err) in
+        CKContainer.default().publicCloudDatabase.delete(withRecordID: recordID) { (recordID, err) in
             DispatchQueue.main.async {
                 if let err = err {
                     completion(.failure(err))
@@ -130,7 +130,7 @@ struct CloudKitPostNummer {
     
     // MARK: - delete all PostNummer from CloudKit
     static func deleteAllPostNummer() {
-        let privateDb =  CKContainer.default().privateCloudDatabase
+        let privateDb =  CKContainer.default().publicCloudDatabase
         let query = CKQuery(recordType: "PostNummer", predicate: NSPredicate(format: "TRUEPREDICATE", argumentArray: nil))
         var counter = 0
         privateDb.perform(query, inZoneWith: nil) { (records, error) in

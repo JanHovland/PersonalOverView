@@ -35,7 +35,7 @@ struct CloudKitCabin {
         let query = CKQuery(recordType: RecordType.Cabin, predicate: predicate)
         DispatchQueue.main.async {
             /// inZoneWith: nil : Specify nil to search the default zone of the database.
-            CKContainer.default().privateCloudDatabase.perform(query, inZoneWith: nil, completionHandler: { (results, er) in
+            CKContainer.default().publicCloudDatabase.perform(query, inZoneWith: nil, completionHandler: { (results, er) in
                 DispatchQueue.main.async {
                     let description = "\(String(describing: er))"
                     if description != "nil" {
@@ -97,7 +97,7 @@ struct CloudKitCabin {
                 }
             }
         }
-        CKContainer.default().privateCloudDatabase.add(operation)
+        CKContainer.default().publicCloudDatabase.add(operation)
     }
     
     /// MARK: - saving to CloudKit
@@ -106,7 +106,7 @@ struct CloudKitCabin {
         cabin["name"] = item.name as CKRecordValue
         cabin["fromDate"] = item.fromDate as CKRecordValue
         cabin["toDate"] = item.toDate as CKRecordValue
-        CKContainer.default().privateCloudDatabase.save(cabin) { (record, err) in
+        CKContainer.default().publicCloudDatabase.save(cabin) { (record, err) in
             DispatchQueue.main.async {
                 if let err = err {
                     completion(.failure(err))
@@ -142,7 +142,7 @@ struct CloudKitCabin {
 
     // MARK: - delete cabin from CloudKit
     static func deleteCabin(recordID: CKRecord.ID, completion: @escaping (Result<CKRecord.ID, Error>) -> ()) {
-        CKContainer.default().privateCloudDatabase.delete(withRecordID: recordID) { (recordID, err) in
+        CKContainer.default().publicCloudDatabase.delete(withRecordID: recordID) { (recordID, err) in
             DispatchQueue.main.async {
                 if let err = err {
                     completion(.failure(err))
@@ -160,7 +160,7 @@ struct CloudKitCabin {
     // MARK: - modify in CloudKit
     static func modifyCabin(item: Cabin, completion: @escaping (Result<Cabin, Error>) -> ()) {
         guard let recordID = item.recordID else { return }
-        CKContainer.default().privateCloudDatabase.fetch(withRecordID: recordID) { record, err in
+        CKContainer.default().publicCloudDatabase.fetch(withRecordID: recordID) { record, err in
             if let err = err {
                 DispatchQueue.main.async {
                     completion(.failure(err))
@@ -177,7 +177,7 @@ struct CloudKitCabin {
             record["fromDate"] = item.fromDate as CKRecordValue
             record["toDate"] = item.toDate as CKRecordValue
             
-            CKContainer.default().privateCloudDatabase.save(record) { (record, err) in
+            CKContainer.default().publicCloudDatabase.save(record) { (record, err) in
                 DispatchQueue.main.async {
                     if let err = err {
                         completion(.failure(err))
@@ -215,7 +215,7 @@ struct CloudKitCabin {
     
     // MARK: - delete all cabins from CloudKit
     static func deleteAllCabins() {
-        let privateDb =  CKContainer.default().privateCloudDatabase
+        let privateDb =  CKContainer.default().publicCloudDatabase
         let query = CKQuery(recordType: "Cabin", predicate: NSPredicate(format: "TRUEPREDICATE", argumentArray: nil))
         var counter = 0
         privateDb.perform(query, inZoneWith: nil) { (records, error) in

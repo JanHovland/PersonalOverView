@@ -15,8 +15,6 @@ struct PersonsOverViewIndexed: View {
     
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var personInfo: PersonInfo
-    
-    @ObservedObject var sheet = SettingsSheet()
     @ObservedObject private var searchViewModel = SearchViewModel()
     
     @State private var persons = [Person]()
@@ -33,7 +31,18 @@ struct PersonsOverViewIndexed: View {
     @State private var municipalityNumber: String = ""
     @State private var municipality: String = ""
     @State private var indicatorShowing = false
+    @State private var isAlertActive = false
+    @State private var isAlertActive1 = false
 
+    @State private var queryString: String = ""
+    
+    enum SheetContent {
+        case first
+    }
+    
+    @State private var sheetContent: SheetContent = .first
+    @State private var showSheet = false
+    
     var body: some View {
         ScrollViewReader { proxy in
             HStack {
@@ -47,7 +56,8 @@ struct PersonsOverViewIndexed: View {
                 Spacer()
                 Button(action: {
                     /// Rutine for å legge til en person
-                    person_New_View()
+                    sheetContent = .first
+                    showSheet = true
                 }, label: {
                     Text("Add")
                         .font(Font.headline.weight(.light))
@@ -58,6 +68,7 @@ struct PersonsOverViewIndexed: View {
             .padding(.trailing,10)
             .padding(.top, 10)
             .padding(.bottom, 5)
+            
             SearchBar(text: $searchViewModel.searchText,
                       persons: $persons,
                       sectionHeader: $sectionHeader,
@@ -65,11 +76,8 @@ struct PersonsOverViewIndexed: View {
                 .keyboardType(.asciiCapable)
                 .padding(.trailing, 10)
                 .padding(.bottom, 10)
+            
             ScrollView {
-                VStack (alignment: .center) {
-                    /// ActivityIndicator setter opp en ekstra tom linje for seg selv
-                    ActivityIndicator(isAnimating: $indicatorShowing, style: .medium, color: .gray)
-                }
                 LazyVStack (alignment: .leading) {
                     ForEach(sectionHeader, id: \.self) { letter in
                         ///
@@ -88,139 +96,31 @@ struct PersonsOverViewIndexed: View {
                                     if searchViewModel.searchText.isEmpty || person.firstName.uppercased().contains(searchViewModel.searchText.uppercased()) {
                                         NavigationLink(destination: PersonView(person: person)) {
                                             VStack (alignment: .leading) {
-                                                HStack (alignment: .center, spacing: 10) {
-                                                    if person.image != nil {
-                                                        Image(uiImage: person.image!)
-                                                            .resizable()
-                                                            .frame(width: 50, height: 50, alignment: .center)
-                                                            .clipShape(Circle())
-                                                            .overlay(Circle().stroke(Color.white, lineWidth: 1))
-                                                    } else {
-                                                        Image(systemName: "person.circle")
-                                                            .resizable()
-                                                            .font(.system(size: 16, weight: .ultraLight, design: .serif))
-                                                            .frame(width: 50, height: 50, alignment: .center)
-                                                    }
-                                                    VStack (alignment: .leading, spacing: 5) {
-                                                        Text(person.firstName)
-                                                            .font(Font.title.weight(.ultraLight))
-                                                        Text(person.lastName)
-                                                            .font(Font.body.weight(.ultraLight))
-                                                        Text("\(person.dateOfBirth, formatter: ShowPerson.taskDateFormat)")
-                                                            .font(.custom("system", size: 17))
-                                                        HStack {
-                                                            Text(person.address)
-                                                                .font(.custom("system", size: 17))
-                                                        }
-                                                        HStack {
-                                                            Text(person.cityNumber)
-                                                            Text(person.city)
-                                                        }
-                                                        .font(.custom("system", size: 17))
-                                                    }
-                                                } /// HStack
-                                                HStack (alignment: .center, spacing: 10) {
+                                                PersonDetailView(person: person)
+                                                HStack {
                                                     Image(systemName: "person.crop.circle.badge.xmark")
                                                         .resizable()
-                                                        .frame(width: 30, height: 30)
+                                                        .frame(width: 40, height: 33)
                                                         .font(Font.title.weight(.ultraLight))
                                                         .foregroundColor(.red)
-                                                        .padding(.trailing, 10)
+                                                        .padding(.trailing, 0)
                                                         .gesture(
                                                             TapGesture()
                                                                 .onEnded({_ in
-                                                                    /// Rutine for å slette en bruker
+                                                                    message = NSLocalizedString("If you delete this Person, if not available anymore.", comment: "UserOverView")
+                                                                    isAlertActive.toggle()
                                                                     recordID = person.recordID
                                                                     title = NSLocalizedString("Delete Person?", comment: "UserOverView")
-                                                                    message = NSLocalizedString("If you delete this Person, if not available anymore.", comment: "UserOverView")
-                                                                    choise = NSLocalizedString("Delete this Person", comment: "UserOverView")
-                                                                    result = NSLocalizedString("Successfully deleted this Person", comment: "UserOverView")
-                                                                    alertIdentifier = AlertID(id: .third)
                                                                 })
                                                         )
-                                                    Image("map")
-                                                        .resizable()
-                                                        .frame(width: 36, height: 36, alignment: .center)
-                                                        .gesture(
-                                                            TapGesture()
-                                                                .onEnded({_ in
-                                                                    //                                                                    https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/MapLinks/MapLinks.html#//apple_ref/doc/uid/TP40007899-CH5-SW1
-                                                                    mapAddress(address: person.address,
-                                                                               cityNumber: person.cityNumber,
-                                                                               city: person.city)
-                                                                })
-                                                        )
-                                                    Image("phone")
-                                                        /// Formatet er : tel:<phone>
-                                                        .resizable()
-                                                        .frame(width: 30, height: 30, alignment: .center)
-                                                        .gesture(
-                                                            TapGesture()
-                                                                .onEnded({_ in
-                                                                    if person.phoneNumber.count >= 8 {
-                                                                        /// 1: Eventuelle blanke tegn må fjernes
-                                                                        /// 2: Det ringes ved å kalle UIApplication.shared.open(url)
-                                                                        let prefix = "tel:"
-                                                                        let phoneNumber1 = prefix + person.phoneNumber
-                                                                        let phoneNumber = phoneNumber1.replacingOccurrences(of: " ", with: "")
-                                                                        guard let url = URL(string: phoneNumber) else { return }
-                                                                        UIApplication.shared.open(url)
-                                                                    } else {
-                                                                        message = NSLocalizedString("Missing phonenumber", comment: "ShowPersons")
-                                                                        alertIdentifier = AlertID(id: .first)
-                                                                    }
-                                                                })
-                                                        )
-                                                    Image("message")
-                                                        /// Formatet er : tel:<phone><&body>
-                                                        .resizable()
-                                                        .frame(width: 30, height: 30, alignment: .center)
-                                                        .gesture(
-                                                            TapGesture()
-                                                                .onEnded({ _ in
-                                                                    if person.phoneNumber.count >= 8 {
-                                                                        personSendSMS(person: person)
-                                                                    } else {
-                                                                        message = NSLocalizedString("Missing phonenumber", comment: "ShowPersons")
-                                                                        alertIdentifier = AlertID(id: .first)
-                                                                    }
-                                                                })
-                                                        )
-                                                    Image("mail")
-                                                        .resizable()
-                                                        .frame(width: 36, height: 36, alignment: .center)
-                                                        .gesture(
-                                                            TapGesture()
-                                                                .onEnded({ _ in
-                                                                    if person.personEmail.count > 5 {
-                                                                        /// Lagrer personens navn og e-post adresse i @EnvironmentObject personInfo
-                                                                        personInfo.email = person.personEmail
-                                                                        personInfo.name = person.firstName
-                                                                        person_Send_Email_View()
-                                                                    } else {
-                                                                        message = NSLocalizedString("Missing personal email", comment: "ShowPersons")
-                                                                        alertIdentifier = AlertID(id: .first)
-                                                                    }
-                                                                })
-                                                        )
-                                                    Image("Cabin")
-                                                        .resizable()
-                                                        .frame(width: 32, height: 32, alignment: .center)
-                                                        .cornerRadius(4)
-                                                        .gesture(
-                                                            TapGesture()
-                                                                .onEnded({ _ in
-                                                                    if person.firstName.count > 1 {
-                                                                    personInfo.name = person.firstName + " " + person.lastName
-                                                                    cabin_Reservation()
-                                                                    } else {
-                                                                        message = NSLocalizedString("No name selected", comment: "ShowPersons")
-                                                                        alertIdentifier = AlertID(id: .first)
-                                                                    }
-                                                                })
-                                                        )
+                                                    PersonDetailMapView(person: person)
+                                                    PersonDetailPhoneView(person: person)
+                                                    PersonDetailMessageView(person: person)
+                                                    PersonDetailMailView(person: person)
+                                                    PersonDetailCabinView(person: person)
                                                 }
                                                 .padding(.leading, 60)
+                                                
                                             }
                                         }
                                     }
@@ -234,75 +134,58 @@ struct PersonsOverViewIndexed: View {
                         }  /// if searchViewModel.isSearchValid
                     }
                 }
-                .alert(item: $alertIdentifier) { alert in
-                    switch alert.id {
-                    case .first:
-                        return Alert(title: Text(message))
-                    case .second:
-                        return Alert(title: Text(message))
-                    case .third:
-                        return Alert(title: Text(title),
-                                     message: Text(message),
-                                     primaryButton: .destructive(Text(choise),
-                                                                 action: {
-                                                                    CloudKitPerson.deletePerson(recordID: recordID!) { (result) in
-                                                                        switch result {
-                                                                        case .success :
-                                                                            message = NSLocalizedString("Successfully deleted a  Person", comment: "UserOverView")
-                                                                            alertIdentifier = AlertID(id: .first)
-                                                                        case .failure(let err):
-                                                                            message = err.localizedDescription
-                                                                            alertIdentifier = AlertID(id: .first)
-                                                                        }
-                                                                    }
-                                                                    /// Sletter den valgte raden
-                                                                    persons.remove(atOffsets: indexSetDelete)
-                                                                    refreshPersonsIndexed()
-                                                                    
-                                                                 }),
-                                     secondaryButton: .default(Text(NSLocalizedString("Cancel", comment: "UserOverView"))))
-                    case  .delete:
-                        return Alert(title: Text(message))
-                    }
+                
+                ///
+                /// .alert for å slette en person i CloudKit
+                ///
+                
+                .alert(title, isPresented: $isAlertActive) {
+                    Button("Delete", role: .destructive, action: {
+                        CloudKitPerson.deletePerson(recordID: recordID!) { (result) in
+                            switch result {
+                            case .success :
+                                message = NSLocalizedString("Successfully deleted a Person", comment: "UserOverView")
+                                isAlertActive1.toggle()
+                            case .failure(let err):
+                                message = err.localizedDescription
+                                isAlertActive1.toggle()
+                            }
+                        }
+                        /// Sletter den valgte raden
+                        persons.remove(atOffsets: indexSetDelete)
+                        refreshPersonsIndexed()
+
+                    })
+                } message: {
+                    Text(message)
                 }
+                
+                ///
+                /// .alert for status fra  sletting internt i CloudKit
+                ///
+                
+                .alert(Text("Status from CloudKit"), isPresented: $isAlertActive1) {
+                    Button("OK", action: {})
+                } message: {
+                    Text(message)
+                }
+                
             } /// ScrollView
-            .overlay(sectionIndexTitles(proxy: proxy,
-                                        titles: sectionHeader))
+            .overlay(sectionIndexTitles(proxy: proxy, titles: sectionHeader))
         } /// ScrollViewReader
         .padding(.leading, 5)
-        .sheet(isPresented: $sheet.isShowing, content: sheetContent)
+        .sheet(isPresented: $showSheet, content: {
+            switch sheetContent {
+            case .first: PersonNewView()
+            }
+        })
         .onAppear{
             indicatorShowing = true
             refreshPersonsIndexed()
             indicatorShowing = false
         }
+        
     } /// Body
-    
-    /// Her legges det inn knytning til aktuelle view
-    @ViewBuilder
-    private func sheetContent() -> some View {
-        if sheet.state == .cabinReservation {
-            CabinReservationView()
-        } else if sheet.state == .newPerson {
-            PersonNewView()
-        } else if sheet.state == .email {
-            PersonSendEmailView()
-        } else {
-            EmptyView()
-        }
-    }
-    
-    func person_New_View() {
-        sheet.state = .newPerson
-    }
-    
-    func person_Send_Email_View() {
-        sheet.state = .email
-    }
-    
-    func cabin_Reservation() {
-        sheet.state = .cabinReservation
-    }
     
     /// Rutine for å friske opp bildet
     func refreshPersonsIndexed() {
@@ -346,7 +229,7 @@ struct PersonsOverViewIndexed: View {
         
     } /// refreshPersonsIndexed
     
-    /// SearchBar er ikke er ikke en del av SWIFTUI
+    /// SearchBar er ikke er ikke en del av SWIFTUI i iOS 13 kom med i iOS 14
     struct SearchBar: View {
         @Binding var text: String
         @Binding var persons:  [Person]
@@ -394,7 +277,7 @@ struct PersonsOverViewIndexed: View {
                     }
                     .padding(.trailing, 10)
                     .transition(.move(edge: .trailing))
-                    .animation(.default)
+//                    .animation(.default)
                 }
             }
             .onChange(of: text, perform: { value in

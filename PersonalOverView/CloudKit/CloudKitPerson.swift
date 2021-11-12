@@ -41,7 +41,7 @@ struct CloudKitPerson {
         if ImagePicker.shared.imageFileURL != nil {
             itemRecord["image"] = CKAsset(fileURL: ImagePicker.shared.imageFileURL!)
         }
-        CKContainer.default().privateCloudDatabase.save(itemRecord) { (record, err) in
+        CKContainer.default().publicCloudDatabase.save(itemRecord) { (record, err) in
             DispatchQueue.main.async {
                 if let err = err {
                     completion(.failure(err))
@@ -132,7 +132,7 @@ struct CloudKitPerson {
         let predicate = NSPredicate(format: "firstName == %@ AND lastName = %@", firstName, lastName)
         let query = CKQuery(recordType: RecordType.Person, predicate: predicate)
         /// inZoneWith: nil : Specify nil to search the default zone of the database.
-        CKContainer.default().privateCloudDatabase.perform(query, inZoneWith: nil, completionHandler: { (results, er) in
+        CKContainer.default().publicCloudDatabase.perform(query, inZoneWith: nil, completionHandler: { (results, er) in
             DispatchQueue.main.async {
                 result = false
                 if results != nil {
@@ -243,12 +243,12 @@ struct CloudKitPerson {
                 }
             }
         }
-        CKContainer.default().privateCloudDatabase.add(operation)
+        CKContainer.default().publicCloudDatabase.add(operation)
     }
     
     // MARK: - delete person from CloudKit
     static func deletePerson(recordID: CKRecord.ID, completion: @escaping (Result<CKRecord.ID, Error>) -> ()) {
-        CKContainer.default().privateCloudDatabase.delete(withRecordID: recordID) { (recordID, err) in
+        CKContainer.default().publicCloudDatabase.delete(withRecordID: recordID) { (recordID, err) in
             DispatchQueue.main.async {
                 if let err = err {
                     completion(.failure(err))
@@ -266,7 +266,7 @@ struct CloudKitPerson {
     // MARK: - modify in CloudKit
     static func modifyPerson(item: Person, completion: @escaping (Result<Person, Error>) -> ()) {
         guard let recordID = item.recordID else { return }
-        CKContainer.default().privateCloudDatabase.fetch(withRecordID: recordID) {
+        CKContainer.default().publicCloudDatabase.fetch(withRecordID: recordID) {
             record, err in
             if let err = err {
                 DispatchQueue.main.async {
@@ -297,7 +297,7 @@ struct CloudKitPerson {
                 record["image"] = CKAsset(fileURL: ImagePicker.shared.imageFileURL!)
             }
             
-            CKContainer.default().privateCloudDatabase.save(record) { (record, err) in
+            CKContainer.default().publicCloudDatabase.save(record) { (record, err) in
                 DispatchQueue.main.async {
                     if let err = err {
                         completion(.failure(err))
@@ -379,7 +379,7 @@ struct CloudKitPerson {
     // MARK: - delete all Persons from CloudKit
     static func deleteAllPersons() {
         
-        let privateDb =  CKContainer.default().privateCloudDatabase
+        let privateDb =  CKContainer.default().publicCloudDatabase
         let query = CKQuery(recordType: "Person", predicate: NSPredicate(format: "TRUEPREDICATE", argumentArray: nil))
         var counter = 0
         DispatchQueue.main.async {

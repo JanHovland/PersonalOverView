@@ -60,6 +60,7 @@ struct PersonTabView: View {
                     }
                     .tag(4)
             }
+//            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
             .navigationBarTitle(heading[selection], displayMode:  .inline)
             .navigationBarItems(leading:
                                     HStack {

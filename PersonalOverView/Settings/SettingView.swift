@@ -57,7 +57,6 @@ struct SettingView: View {
                     Image(systemName: "lock.circle")
                         .resizable()
                         .frame(width: 29, height: 29)
-                        .background(Color.red)
                         .imageScale(.medium)
                         .cornerRadius(5)
                     Text(NSLocalizedString("Password", comment: "SettingView"))

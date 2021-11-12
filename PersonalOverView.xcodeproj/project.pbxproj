@@ -92,6 +92,7 @@
 		DBF8AAD22640452A00E2E278 /* Hud.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8AAD12640452A00E2E278 /* Hud.swift */; };
 		DBF8AAD52640476400E2E278 /* HudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF8AAD42640476400E2E278 /* HudView.swift */; };
 		DBFC96F725333DC800E9803E /* PersonSendEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBFC96F625333DC800E9803E /* PersonSendEmailView.swift */; };
+		DBFE2CEB272159B100EE4482 /* PersonDetailViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBFE2CEA272159B100EE4482 /* PersonDetailViews.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -183,6 +184,7 @@
 		DBF8AAD12640452A00E2E278 /* Hud.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hud.swift; sourceTree = "<group>"; };
 		DBF8AAD42640476400E2E278 /* HudView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HudView.swift; sourceTree = "<group>"; };
 		DBFC96F625333DC800E9803E /* PersonSendEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonSendEmailView.swift; sourceTree = "<group>"; };
+		DBFE2CEA272159B100EE4482 /* PersonDetailViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonDetailViews.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -400,6 +402,7 @@
 			children = (
 				DB807C85251CBFD000D0E839 /* PersonBirthdayView.swift */,
 				DB7134E2257D73B500E76B63 /* PersonDeleteView.swift */,
+				DBFE2CEA272159B100EE4482 /* PersonDetailViews.swift */,
 				DB2FB3B6251916B200C2B864 /* PersonalOverView.swift */,
 				DBDDD7DC25822EC9002FDF98 /* PersonFindPostalCodesViewIndexed.swift */,
 				DBCAAD0E252BB09300CAA4C1 /* PersonMapView.swift */,
@@ -538,6 +541,7 @@
 				DBA6A5712532236E009A4400 /* SendMailBirthDayView.swift in Sources */,
 				DB4F7E4E251A509000DF3613 /* PersistenceController.swift in Sources */,
 				DB2FB3E42519F83500C2B864 /* DismissingKeyboard.swift in Sources */,
+				DBFE2CEB272159B100EE4482 /* PersonDetailViews.swift in Sources */,
 				DBBB2389263FDA9200B5F299 /* CloudKitCabin.swift in Sources */,
 				DB2FB3CD25191E2400C2B864 /* User.swift in Sources */,
 				DBA5B729253EFE6000CCB7E0 /* PersonSendMessageView.swift in Sources */,
@@ -672,7 +676,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -728,7 +732,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -749,7 +753,7 @@
 				DEVELOPMENT_TEAM = 6UR9TA6744;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = PersonalOverView/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -773,7 +777,7 @@
 				DEVELOPMENT_TEAM = 6UR9TA6744;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = PersonalOverView/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

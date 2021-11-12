@@ -100,6 +100,9 @@
 "Cabin overview" = "Hytte oversikt";
 
 /* CabinReservationView */
+"Cabin reservation" = "Hytte reservasjon";
+
+/* CabinReservationView */
 "Cabin Reservation" = "Hytte reservasjon";
 
 /* PersonTabView */
@@ -223,16 +226,13 @@
 "Delete person index" = "Slette person";
 
 /* UserOverView */
-"Delete Person?" = "Slette personen?";
+"Delete Person?" = "Slett en person";
 
 /* CabinOverview */
-"Delete Reservarion?" = "Slette reservasjonen?";
+"Delete Reservarion?" = "Slett reservasjon";
 
 /* PersonsOverView */
 "Delete this person" = "Slett denne personen";
-
-/* UserOverView */
-"Delete this Person" = "Slett denne personen";
 
 /* CabinOverview */
 "Delete this reservation" = "Slett denne reservasjonen";
@@ -371,7 +371,10 @@
 "From date" = "Fra dato";
 
 /* CabinReservationView */
-"From date must be earlier than To date." = "Fra dato må være tidligere enn Til dato.";
+"From date / To date" = "Fra dato / til dato";
+
+/* CabinReservationView */
+"From date must be earlier than To date." = "Fra dato må være mindre enn til dato.";
 
 /* PersonNewView
    PersonView */
@@ -648,15 +651,18 @@
 /* SettingView */
 "Slett postnummer (100 om gangen)" = "Slett postnummer (100 om gangen)";
 
+/* No comment provided by engineer. */
+"Status from CloudKit" = "Status fra CloudKit";
+
 /* CabinReservationView */
 "Store" = "Lagre";
-
-/* UserOverView */
-"Successfully deleted a  Person" = "Personen er nå slettet i CloudKit.";
 
 /* PersonDeleteView
    PersonsOverView */
 "Successfully deleted a person" = "En person ble slettet.";
+
+/* UserOverView */
+"Successfully deleted a Person" = "Personen er slettet.";
 
 /* CabinOverview */
 "Successfully deleted a reservation" = "Reservasjonen er nå slettet.";

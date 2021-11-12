@@ -31,7 +31,7 @@ struct UserOverViewIndexed: View {
     @State private var recordID: CKRecord.ID?
     @State private var sectionHeader = [String]()
     @State private var indicatorShowing = false
-
+    
     var body: some View {
         ScrollViewReader { proxy in
             HStack {
@@ -56,10 +56,6 @@ struct UserOverViewIndexed: View {
                 .padding(.trailing, 10)
                 .padding(.bottom, 10)
             ScrollView {
-                VStack (alignment: .center) {
-                    /// ActivityIndicator setter opp en ekstra tom linje for seg selv
-                    ActivityIndicator(isAnimating: $indicatorShowing, style: .medium, color: .gray)
-                }
                 LazyVStack (alignment: .leading) {
                     ForEach(sectionHeader, id: \.self) { letter in
                         ///
@@ -96,25 +92,7 @@ struct UserOverViewIndexed: View {
                                                                 })
                                                         )
                                                         .padding(.trailing, 10)
-                                                    if user1.image != nil {
-                                                        Image(uiImage: user1.image!)
-                                                            .resizable()
-                                                            .frame(width: 50, height: 50, alignment: .center)
-                                                            .clipShape(Circle())
-                                                            .overlay(Circle().stroke(Color.white, lineWidth: 1))
-                                                    } else {
-                                                        Image(systemName: "person.circle")
-                                                            .resizable()
-                                                            .font(.system(size: 16, weight: .ultraLight))
-                                                            .frame(width: 50, height: 50, alignment: .center)
-                                                    }
-                                                    /// Skal kun fremheve  navn og e-post for pålogget bruker
-                                                    VStack (alignment: .leading, spacing: 5) {
-                                                        Text(user1.name)
-                                                            .font(Font.title.weight(.ultraLight))
-                                                        Text(user1.email)
-                                                            .font(Font.body.weight(.ultraLight))
-                                                    }
+                                                    UserDetailView(user1: user1)
                                                     Spacer()
                                                 } /// HStack
                                                 .padding(5)
@@ -143,21 +121,21 @@ struct UserOverViewIndexed: View {
                                      message: Text(message),
                                      primaryButton: .destructive(Text(choise),
                                                                  action: {
-                                                                    CloudKitUser.deleteUser(recordID: recordID!) { (result) in
-                                                                        switch result {
-                                                                        case .success :
-                                                                            message = NSLocalizedString("Successfully deleted an user", comment: "UserOverViewIndexed")
-                                                                            alertIdentifier = AlertID(id: .first)
-                                                                        case .failure(let err):
-                                                                            message = err.localizedDescription
-                                                                            alertIdentifier = AlertID(id: .first)
-                                                                        }
-                                                                    }
-                                                                    /// Sletter den valgte raden
-                                                                    users.remove(atOffsets: indexSetDelete)
-                                                                    refreshUsersIndexed()
-                                                                    
-                                                                 }),
+                            CloudKitUser.deleteUser(recordID: recordID!) { (result) in
+                                switch result {
+                                case .success :
+                                    message = NSLocalizedString("Successfully deleted an user", comment: "UserOverViewIndexed")
+                                    alertIdentifier = AlertID(id: .first)
+                                case .failure(let err):
+                                    message = err.localizedDescription
+                                    alertIdentifier = AlertID(id: .first)
+                                }
+                            }
+                            /// Sletter den valgte raden
+                            users.remove(atOffsets: indexSetDelete)
+                            refreshUsersIndexed()
+                            
+                        }),
                                      secondaryButton: .default(Text(NSLocalizedString("Cancel", comment: "UserOverViewIndexed"))))
                     case  .delete:
                         return Alert(title: Text(message))
@@ -266,7 +244,7 @@ struct UserOverViewIndexed: View {
                     }
                     .padding(.trailing, 10)
                     .transition(.move(edge: .trailing))
-                    .animation(.default)
+                    //                    .animation(.default)
                 }
             }
             .onChange(of: text, perform: { value in
@@ -322,3 +300,28 @@ struct UserOverViewIndexed: View {
     }
     
 } /// struct UserOverViewIndexed
+
+struct UserDetailView: View {
+    var user1: UserRecord
+    var body: some View {
+        if user1.image != nil {
+            Image(uiImage: user1.image!)
+                .resizable()
+                .frame(width: 50, height: 50, alignment: .center)
+                .clipShape(Circle())
+                .overlay(Circle().stroke(Color.white, lineWidth: 1))
+        } else {
+            Image(systemName: "person.circle")
+                .resizable()
+                .font(.system(size: 16, weight: .ultraLight))
+                .frame(width: 50, height: 50, alignment: .center)
+        }
+        /// Skal kun fremheve  navn og e-post for pålogget bruker
+        VStack (alignment: .leading, spacing: 5) {
+            Text(user1.name)
+                .font(Font.title.weight(.ultraLight))
+            Text(user1.email)
+                .font(Font.body.weight(.ultraLight))
+        }
+    }
+}
