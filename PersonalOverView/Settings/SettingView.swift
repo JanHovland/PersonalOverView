@@ -405,6 +405,7 @@ struct SettingView: View {
     func updatePostNummerFromCSV() {
         
         var index = 0
+        var counter = 0
         /// Finner URL fra prosjektet
         guard let contentsOfURL = Bundle.main.url(forResource: "Postnummerregister-ansi", withExtension: "txt") else { return }
         /// Må bruke encoding == ascii (utf8 virker ikke)
@@ -416,12 +417,18 @@ struct SettingView: View {
             CloudKitPostNummer.savePostNummer(item: postNummer) { (result) in
                 switch result {
                 case .success:
-                    _ = 1
+                    
+                    counter += 1
+                    print(counter)
+                    
                 case .failure(let err):
                     let _ = err.localizedDescription
                 }
             }
             index += 1
+            
+            print(index)
+            
         } while index < maxNumber
         let _ = "Poster lagret: \(index)"
     }
