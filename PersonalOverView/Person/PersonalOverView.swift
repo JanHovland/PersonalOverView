@@ -5,12 +5,19 @@
 //  Created by Jan Hovland on 21/09/2020.
 //
 
-/// Det hender at det tar vekdug lang tid fra Build Succeeded til applikasjonen vises på iPhone eller iPad:
+/// Det hender at det tar veldig lang tid fra Build Succeeded til applikasjonen vises på iPhone eller iPad:
 /// 🟢  Slå av iMac
 /// 🟢  Start Clean My Mac X og kjør System Junc
 ///    Pass på at det ikke ligger noe igjen for Xcode
 ///    Sjekk Hung Applications og Heavy Consumers
 /// 🟢   Det ser ikke ut at Adobe forårsaker tregheten
+///
+
+///
+/// Kan ikke kjøre PersonalOverView() slik at alt alle funksjonene virker OK
+/// **Spesielt er det å finne postnummer "dødt"
+/// *Velger derfor å ikke rette med her, men konsentrerer meg omPerData istedet
+///
 
 import SwiftUI
 
